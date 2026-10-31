@@ -1,0 +1,23 @@
+{
+  "name": "NadecoLlms",
+  "namespace": "NadecoLlms",
+  "type": "general",
+  "version": "1.0.0",
+  "pluginIcon": "icon_plugin_xs.png",
+  "price": 0.00,
+  "description": "Liefert unter /llms.txt eine Kurzbeschreibung des NaDeco-Shops für KI-Suchmaschinen aus.",
+  "shortDescription": {"de": "llms.txt für nadeco.de", "en": "llms.txt for nadeco.de"},
+  "marketplaceName": {"de": "NaDeco llms.txt", "en": "NaDeco llms.txt"},
+  "author": "NaDeco",
+  "authorIcon": "icon_author_xs.png",
+  "email": "info@nadeco.de",
+  "keywords": ["llms.txt", "seo"],
+  "license": "",
+  "isClosedSource": false,
+  "serviceProvider": "NadecoLlms\\Providers\\NadecoLlmsServiceProvider",
+  "require": [],
+  "dependencies": [],
+  "categories": [],
+  "runOnBuild": [],
+  "checkOnBuild": []
+}
