@@ -1,5 +1,8 @@
 # Changelog
 
+## v1.3.0 (2026-11-09)
+- IndexNow-Schlüssel unter /indexnow-741f9f45ff260b840354b262aa2fdf66 (für Bing und andere Suchmaschinen)
+
 ## v1.2.1 (2026-11-09)
 - robots-Korrektur auch für großgeschriebenes NOINDEX (Kategorieseiten), kein preg_replace_callback mehr
 
