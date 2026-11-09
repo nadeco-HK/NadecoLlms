@@ -74,19 +74,13 @@ class SeoParamMiddleware extends Middleware
             $new = $content;
 
             // 1. URLs in canonical, hreflang-alternate und og:url bereinigen
-            $new = preg_replace_callback(
-                '/(<link\b[^>]*\brel=["\'](?:canonical|alternate)["\'][^>]*\bhref=["\'])([^"\']*)(["\'])/i',
-                function ($m) {
-                    return $m[1] . SeoParamMiddleware::cleanUrl($m[2]) . $m[3];
-                },
-                $new
+            $new = self::cleanTagUrls(
+                $new,
+                '/(<link\b[^>]*\brel=["\'](?:canonical|alternate)["\'][^>]*\bhref=["\'])([^"\']*)(["\'])/i'
             );
-            $new = preg_replace_callback(
-                '/(<meta\b[^>]*\bproperty=["\']og:url["\'][^>]*\bcontent=["\'])([^"\']*)(["\'])/i',
-                function ($m) {
-                    return $m[1] . SeoParamMiddleware::cleanUrl($m[2]) . $m[3];
-                },
-                $new
+            $new = self::cleanTagUrls(
+                $new,
+                '/(<meta\b[^>]*\bproperty=["\']og:url["\'][^>]*\bcontent=["\'])([^"\']*)(["\'])/i'
             );
 
             // 2. robots: param-bedingtes "noindex" zurücksetzen, wenn nur Tracking übrig war
@@ -106,6 +100,22 @@ class SeoParamMiddleware extends Middleware
         }
 
         return $response;
+    }
+
+    /** Ersetzt in allen Treffern des Musters die URL (Gruppe 2) durch die bereinigte URL. */
+    private static function cleanTagUrls(string $html, string $pattern): string
+    {
+        $matches = [];
+        if (!preg_match_all($pattern, $html, $matches, PREG_SET_ORDER)) {
+            return $html;
+        }
+        foreach ($matches as $m) {
+            $clean = self::cleanUrl($m[2]);
+            if ($clean !== $m[2]) {
+                $html = str_replace($m[0], $m[1] . $clean . $m[3], $html);
+            }
+        }
+        return $html;
     }
 
     /** Darf robots für diese Anfrage zurückgesetzt werden? */
