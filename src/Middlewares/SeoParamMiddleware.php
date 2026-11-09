@@ -86,7 +86,7 @@ class SeoParamMiddleware extends Middleware
             // 2. robots: param-bedingtes "noindex" zurücksetzen, wenn nur Tracking übrig war
             if (self::robotsAllowed($uri, $rest)) {
                 $new = preg_replace(
-                    '/(<meta\b[^>]*\bname=["\']robots["\'][^>]*\bcontent=["\'])noindex(["\'])/',
+                    '/(<meta\b[^>]*\bname=["\']robots["\'][^>]*\bcontent=["\'])noindex(["\'])/i',
                     '${1}ALL${2}',
                     $new
                 );

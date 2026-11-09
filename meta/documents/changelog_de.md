@@ -1,5 +1,8 @@
 # Changelog
 
+## v1.2.1 (2026-11-09)
+- robots-Korrektur auch für großgeschriebenes NOINDEX (Kategorieseiten), kein preg_replace_callback mehr
+
 ## v1.2.0 (2026-11-09)
 - SEO: Tracking-Parameter (ReferrerID, gclid, utm_* u. a.) verändern robots, Canonical, hreflang und og:url nicht mehr. Behebt noindex auf sauberen URLs durch den Shop-Cache.
 
