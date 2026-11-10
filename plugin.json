@@ -2,7 +2,7 @@
   "name": "NadecoLlms",
   "namespace": "NadecoLlms",
   "type": "general",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "pluginIcon": "icon_plugin_xs.png",
   "price": 0.00,
   "description": "Liefert unter /llms.txt eine Kurzbeschreibung des NaDeco-Shops für KI-Suchmaschinen aus und leitet verschobene Shop-Adressen per 301 weiter.",

@@ -17,6 +17,7 @@ class RedirectController extends Controller
 
     const MAP = [
         '/naturdeko/kokosnuss-deko/palmenblaetter-deko' => '/naturdeko/palmenblaetter-deko',
+        '/zapfen-basteln-1-kg-150-stueck/a-2461' => '/kiefernzapfen-klein-3-5-cm-1-kg/a-2461',
     ];
 
     public function redirect(Request $request, Response $response)

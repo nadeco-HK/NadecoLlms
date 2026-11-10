@@ -1,5 +1,8 @@
 # Changelog
 
+## v1.3.1 (2026-11-10)
+- 301: /zapfen-basteln-1-kg-150-stueck/a-2461 → /kiefernzapfen-klein-3-5-cm-1-kg/a-2461
+
 ## v1.3.0 (2026-11-09)
 - IndexNow-Schlüssel unter /indexnow-741f9f45ff260b840354b262aa2fdf66 (für Bing und andere Suchmaschinen)
 
