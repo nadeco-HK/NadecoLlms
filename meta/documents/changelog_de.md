@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.3.2 (2026-11-12)
+
+- Kategorie-Folgeseiten (page=2 ff.): Title und Meta-Description erhalten „Seite N“.
+
 ## v1.3.1 (2026-11-10)
 - 301: /zapfen-basteln-1-kg-150-stueck/a-2461 → /kiefernzapfen-klein-3-5-cm-1-kg/a-2461
 
