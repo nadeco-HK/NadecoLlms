@@ -64,32 +64,41 @@ class SeoParamMiddleware extends Middleware
                 return $response;
             }
 
-            // Nur Seiten mit mindestens einem Tracking-Parameter anfassen
+            // Nur Seiten mit Tracking-Parameter oder Folgeseiten (page>=2) anfassen
             $all = self::splitQuery($query);
             $rest = self::withoutTracking($all);
-            if (count($rest) === count($all)) {
+            $hasTracking = count($rest) !== count($all);
+            $page = self::pageNumber($all);
+            if (!$hasTracking && $page < 2) {
                 return $response;
             }
 
             $new = $content;
 
-            // 1. URLs in canonical, hreflang-alternate und og:url bereinigen
-            $new = self::cleanTagUrls(
-                $new,
-                '/(<link\b[^>]*\brel=["\'](?:canonical|alternate)["\'][^>]*\bhref=["\'])([^"\']*)(["\'])/i'
-            );
-            $new = self::cleanTagUrls(
-                $new,
-                '/(<meta\b[^>]*\bproperty=["\']og:url["\'][^>]*\bcontent=["\'])([^"\']*)(["\'])/i'
-            );
-
-            // 2. robots: param-bedingtes "noindex" zurücksetzen, wenn nur Tracking übrig war
-            if (self::robotsAllowed($uri, $rest)) {
-                $new = preg_replace(
-                    '/(<meta\b[^>]*\bname=["\']robots["\'][^>]*\bcontent=["\'])noindex(["\'])/i',
-                    '${1}ALL${2}',
-                    $new
+            if ($hasTracking) {
+                // 1. URLs in canonical, hreflang-alternate und og:url bereinigen
+                $new = self::cleanTagUrls(
+                    $new,
+                    '/(<link\b[^>]*\brel=["\'](?:canonical|alternate)["\'][^>]*\bhref=["\'])([^"\']*)(["\'])/i'
                 );
+                $new = self::cleanTagUrls(
+                    $new,
+                    '/(<meta\b[^>]*\bproperty=["\']og:url["\'][^>]*\bcontent=["\'])([^"\']*)(["\'])/i'
+                );
+
+                // 2. robots: param-bedingtes "noindex" zurücksetzen, wenn nur Tracking übrig war
+                if (self::robotsAllowed($uri, $rest)) {
+                    $new = preg_replace(
+                        '/(<meta\b[^>]*\bname=["\']robots["\'][^>]*\bcontent=["\'])noindex(["\'])/i',
+                        '${1}ALL${2}',
+                        $new
+                    );
+                }
+            }
+
+            // 3. Folgeseiten: Seitenzahl in Title und Meta-Description, damit Seite 1 eindeutig ist
+            if ($page >= 2 && is_string($new)) {
+                $new = self::addPageNumber($new, $page);
             }
 
             if (is_string($new) && $new !== $content) {
@@ -100,6 +109,41 @@ class SeoParamMiddleware extends Middleware
         }
 
         return $response;
+    }
+
+    /** Seitenzahl aus page=N (0, wenn nicht vorhanden). */
+    private static function pageNumber(array $pairs): int
+    {
+        foreach ($pairs as $pair) {
+            if (strtolower($pair[0]) === 'page') {
+                return (int) $pair[1];
+            }
+        }
+        return 0;
+    }
+
+    /** Ergänzt "– Seite N" im <title> (vor " | Shopname") und "Seite N: " vor der Meta-Description. */
+    private static function addPageNumber(string $html, int $page): string
+    {
+        $label = 'Seite ' . $page;
+
+        $m = [];
+        if (preg_match('/<title>([^<]*)<\/title>/i', $html, $m) && stripos($m[1], $label) === false) {
+            $title = $m[1];
+            $pos = strrpos($title, ' | ');
+            $newTitle = $pos === false
+                ? $title . ' – ' . $label
+                : substr($title, 0, $pos) . ' – ' . $label . substr($title, $pos);
+            $html = str_replace($m[0], '<title>' . $newTitle . '</title>', $html);
+        }
+
+        $m = [];
+        if (preg_match('/(<meta\b[^>]*\bname=["\']description["\'][^>]*\bcontent=["\'])([^"\']*)(["\'])/i', $html, $m)
+            && stripos($m[2], $label) === false) {
+            $html = str_replace($m[0], $m[1] . $label . ': ' . $m[2] . $m[3], $html);
+        }
+
+        return $html;
     }
 
     /** Ersetzt in allen Treffern des Musters die URL (Gruppe 2) durch die bereinigte URL. */
